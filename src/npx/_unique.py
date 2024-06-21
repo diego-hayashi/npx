@@ -58,9 +58,12 @@ def unique_rows(a: ArrayLike, **kwargs) -> np.ndarray | tuple[np.ndarray, ...]:
 
     b = np.ascontiguousarray(a).view(np.dtype((np.void, a.dtype.itemsize * a.shape[1])))
     out = np.unique(b, **kwargs)
+
     # out[0] are the sorted, unique rows
     if isinstance(out, tuple):
         out = (out[0].view(a.dtype).reshape(out[0].shape[0], *a_shape[1:]), *out[1:])
+        if len(out) > 1:
+            out = (out[0], out[1].T, *out[2:])
     else:
         out = out.view(a.dtype).reshape(out.shape[0], *a_shape[1:])
 
